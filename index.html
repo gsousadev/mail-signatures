@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Digifair Signatures</title>
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Oswald&display=swap');
+
+    * {
+        color: #303030;
+    }
+    .brand{
+        width: 200px;
+    }
+
+    .main-title {
+        font-family: "Oswald", "Arial";
+    }
+
+    .accordion .card {
+        border-radius: 0;
+    }
+
+    .accordion .card .card-header .title {
+        margin: 0;
+        line-height: 1.6;
+        font-family: "Oswald", "Arial";
+    }
+
+    .accordion .card .card-header .btn {
+        border-radius: 0;
+        background: #FF6633;
+        border-color: #FF6633;
+    }
+
+    .badge {
+        background: #FF6633;
+        border-color: #FF6633;
+    }
+
+    .accordion .card .card-header .btn.collapsed:before {
+        content: ' Show ';
+        width: 15px;
+    }
+
+    .accordion .card .card-header .btn:before {
+        content: ' Hidden ';
+        width: 15px;
+    }
+</style>
+
+<body>
+    <div class="container pb-5">
+        <div class="row">
+            <div class="col-12 d-flex justify-content-center">
+                <img src="./img/brand.png" class="img-fluid brand" alt="">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 mb-3">
+                <h1 class="mt-5 mb-3 main-title"><span class="align-bottom badge badge-primary ">New</span> Email
+                    Signatures</h1>
+                <p><strong>Step 1</strong><br>
+                    Click the show button on your email signature</p>
+                <p><strong>Step 2</strong><br>
+                    Select your entire email signature (image and text), such as text selection</p>
+                <p><strong>Step 3</strong><br>
+                    Copy the signature with "Command + C" (Mac) and "Ctrl + C" (Windows)</p>
+                <p><strong>Step 4</strong><br>
+                    Paste your signature into your respective email client. Each email client has a specific area for
+                    the configuration of its signatures.</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="accordion" id="accordion"></div>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        
+     
+
+        
+        $(document).ready(function () {
+            $.getJSON("./signatures.json", function (data) {
+                var items = [];
+                var company_url = data.company_url;
+                $.each(data.peaple, function (key, val) {
+                    items.push(`
+                        <div class="card">
+                            <div class="card-header" id="${val.id["$oid"]}_id">
+                                <div class="mb-0 d-flex justify-content-between">
+                                    <h4 class="title">
+                                        ${val.name}
+                                    </h4>
+                                    <button class="btn btn-secondary collapsed" type="button" data-toggle="collapse"
+                                        data-target="#collapse_${val.id["$oid"]}" aria-expanded="true" aria-controls="collapse_${val.id["$oid"]}"></button>
+                                </div>
+                            </div>
+
+                            <div id="collapse_${val.id["$oid"]}" class="collapse" aria-labelledby="id_${val.id["$oid"]}"
+                                data-parent="#accordion">
+                                <div class="card-body"> 
+                                    <div class="signature_box">
+                                            <table style="margin:0;">
+                                                <tr>
+                                                    <td style="font-family:arial; font-size:11px; text-align:center" valign="top">
+                                                        <a href="${company_url}" target="_blank">
+                                                            <img src="${val.image}.png">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <td style="font-family:arial; font-size:12px; padding-left:30px;margin:0;">
+                                                    <p style="margin:0;line-height:1.2;"><a style="color:#303030;" href="mailto:${val.email}" style="margin:0;"><b>${val.email}</b></a></p>
+                                                    <p style="margin:0;line-height:1.2;"><a style="color:#303030;" href="tel:+${val.country_code}${val.number}" style="margin:0;line-height:1;">+${val.country_code} ${val.number}</a></p>
+                                                </td>
+                                            </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                });
+                $.each(items, function (key, val) {
+                    $("#accordion").append(val);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
